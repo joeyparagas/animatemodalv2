@@ -1,0 +1,353 @@
+@import "../partials/bourbon/bourbon"; // http://bourbon.io/
+
+@import "../partials/variables"; // colors, fonts etc...
+
+@import "../partials/mixins"; // custom mixins
+
+@import "../partials/layout"; // responsive grid and media queries
+
+/* -------------------------------- 
+Main small components 
+-------------------------------- */
+*,
+*::after,
+*::before {
+  @include box-sizing(border-box);
+}
+
+*::after,
+*::before {
+  content: "";
+}
+
+a {
+  color: $color-2;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+h1 {
+  color: $color-4;
+  @include font-size(30px);
+  text-align: center;
+}
+
+/* -------------------------------- 
+Main large components 
+-------------------------------- */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font: {
+    size: 100%;
+    family: $primary-font; // variables inside partials > _variables.scss
+  }
+  color: $color-1;
+  background-color: $color-3;
+
+  &::after {
+    /* dark overlay layer - visible when we fire .cd-quick-view */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba($color-3, 0.8);
+    visibility: hidden;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s 0s, visibility 0s 0.3s;
+    -moz-transition: opacity 0.3s 0s, visibility 0s 0.3s;
+    transition: opacity 0.3s 0s, visibility 0s 0.3s;
+  }
+}
+
+header {
+  & .row {
+    min-height: 10rem;
+    align-items: center;
+  }
+}
+
+/* -------------------------------- 
+Main components 
+-------------------------------- */
+// individual images
+.cd-item {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
+
+  & .container-img {
+    height: 255px;
+  }
+
+  & .cd-trigger {
+    position: absolute;
+    height: 50px;
+    line-height: 50px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 15px;
+    background: rgba(#000, 0.1);
+    text-align: center;
+    @include font-smoothing;
+    color: $color-4;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    @include transition(opacity 0.2s, background-color 0.2s);
+
+    &:hover {
+      background: rgba(#000, 0.3);
+    }
+
+    @include MQ(M) {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  & .cd-title,
+  & .cd-summary {
+    display: none;
+  }
+  @include MQ(S) {
+    & {
+      margin-bottom: 20px;
+    }
+  }
+
+  &:hover .cd-trigger {
+    /* Show cd-trigger on hover */
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.container-img {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  // overflow: hidden;
+
+  img {
+    object-fit: cover;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+  }
+
+  img.h100 {
+    object-fit: cover;
+    // max-height: 100%;
+    height: 100%;
+    width: auto;
+  }
+}
+
+//
+// BEGIN MODAL
+//
+
+.modal-main {
+  padding-bottom: 3rem; // temp
+
+  .row {
+    justify-content: center;
+    background-color: $color-2; // temp
+
+    .modal-img {
+      position: relative;
+      padding: 0;
+      margin: 0;
+
+      .container-img {
+        height: 450px; // temp
+      }
+
+      .modal-nav a {
+        position: absolute;
+        @include center(y); // mixins inside partials > _mixins.scss
+        z-index: 3;
+        padding: 15px;
+        color: rgba($color-4, 0.2);
+        @include transition(opacity 0.2s, background-color 0.2s);
+
+        &:hover {
+          color: $color-4;
+          background-color: rgba($color-3, 0.8);
+        }
+
+        &:first-child {
+          left: 0;
+        }
+        &:last-child {
+          right: 0;
+        }
+      }
+    }
+
+    .modal-info {
+      background-color: $color-4; // temp
+    }
+  }
+}
+
+.cd-quick-view {
+  visibility: hidden;
+  position: relative;
+  display: block;
+  position: fixed;
+  max-width: 900px;
+
+  // temp settings
+  // width: 900px;
+  // height: 450px;
+  // top: 100px;
+  // left: 200px;
+
+  /* Force Hardware Acceleration in WebKit */
+  // @include transform(translateZ(0));
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: left, top, width, height;
+
+  @include clearfix;
+  z-index: 1;
+
+  &.is-visible {
+    /* class added when user clicks on .cd-trigger */
+    visibility: visible;
+  }
+
+  &.animate-width {
+    /* class added at the end of the first zoom-in animation */
+    background-color: $color-4;
+    box-shadow: 0 0 30px rgba(#000, 0.2);
+    // @include transition(box-shadow .3s);
+  }
+
+  & .cd-slider-wrapper {
+    position: relative;
+    float: left;
+    height: 450px;
+    width: 400px;
+    @include clearfix;
+    margin-right: 3rem;
+
+    & .cd-slider-img {
+      position: relative;
+      display: flex;
+      text-align: center;
+      align-items: center;
+
+      & img {
+        object-fit: cover;
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    & .cd-slider-navigation a {
+      position: absolute;
+      @include center(y); // mixins inside partials > _mixins.scss
+      z-index: 3;
+      padding: 15px;
+      color: rgba($color-4, 0.2);
+      @include transition(opacity 0.2s, background-color 0.2s);
+
+      &:hover {
+        color: $color-4;
+        background-color: rgba($color-3, 0.8);
+      }
+
+      &:first-child {
+        left: 0;
+      }
+      &:last-child {
+        right: 0;
+      }
+    }
+  }
+
+  // Animation keyframes
+  @include keyframes(cd-slide-in) {
+    0% {
+      @include transform(translate3d(-40px, 0, 0));
+    }
+
+    100% {
+      @include transform(translate3d(0, 0, 0));
+    }
+  }
+}
+
+// Modal Text Content
+.cd-item-info {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  padding: 3rem;
+  -webkit-transition: opacity 0.3s, visibility 0s;
+  -moz-transition: opacity 0.3s, visibility 0s;
+  transition: opacity 0.3s, visibility 0s;
+
+  p {
+    padding: 1rem;
+  }
+
+  // Animate on the way in
+  .add-content & {
+    /* class added at the end of the width animation, used to show the content */
+    position: relative;
+    visibility: visible;
+    opacity: 1;
+
+    h2 {
+      @include animation(cd-slide-in 0.3s);
+    }
+
+    p {
+      @include animation(cd-slide-in 0.4s);
+    }
+
+    .cd-item-action {
+      @include animation(cd-slide-in 0.5s);
+    }
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: #000;
+  visibility: hidden;
+  @include transform(scale(0));
+  -webkit-transition: -webkit-transform 0.3s 0s, visibility 0s 0.3s;
+  -moz-transition: -moz-transform 0.3s 0s, visibility 0s 0.3s;
+  transition: transform 0.3s 0s, visibility 0s 0.3s;
+
+  // animate on appear
+  .add-content & {
+    visibility: visible;
+    @include transform(scale(1));
+    -webkit-transition: -webkit-transform 0.3s 0s, visibility 0s 0s;
+    -moz-transition: -moz-transform 0.3s 0s, visibility 0s 0s;
+    transition: transform 0.3s 0s, visibility 0s 0s;
+  }
+  &:hover {
+    color: #000;
+    @include transform(scale(1.3));
+  }
+}
+// END MODAL
