@@ -26,8 +26,8 @@ a {
 }
 
 img {
-  max-width: 100%;
-  height: auto;
+  // max-width: 100%;
+  // height: auto;
 }
 
 h1 {
@@ -53,7 +53,7 @@ body {
   background-color: $color-3;
 
   &::after {
-    /* dark overlay layer - visible when we fire .cd-quick-view */
+    /* dark overlay layer when modal opens */
     position: fixed;
     top: 0;
     left: 0;
@@ -79,16 +79,31 @@ header {
 Main components 
 -------------------------------- */
 // individual images
-.cd-item {
+.img-item {
   position: relative;
   overflow: hidden;
   margin-bottom: 30px;
 
-  & .container-img {
-    height: 255px;
+  &.empty-box::after {
+    /* black box on top of selected image */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 15px;
+    height: 100%;
+    background-color: darken($color-3, 5%);
   }
 
-  & .cd-trigger {
+  & .container-img {
+    height: 255px;
+
+    & img {
+      display: none;
+    }
+  }
+
+  & .img-trigger {
     position: absolute;
     height: 50px;
     line-height: 50px;
@@ -115,8 +130,8 @@ Main components
     }
   }
 
-  & .cd-title,
-  & .cd-summary {
+  & .img-title,
+  & .img-summary {
     display: none;
   }
   @include MQ(S) {
@@ -125,52 +140,71 @@ Main components
     }
   }
 
-  &:hover .cd-trigger {
-    /* Show cd-trigger on hover */
+  &:hover .img-trigger {
+    /* Show img-trigger on hover */
     opacity: 1;
     visibility: visible;
   }
 }
 
 .container-img {
+  position: relative;
   display: flex;
-  text-align: center;
+  justify-content: center;
   align-items: center;
-  // overflow: hidden;
 
   img {
-    object-fit: cover;
     max-width: 100%;
-    width: 100%;
     height: auto;
-  }
-
-  img.h100 {
-    object-fit: cover;
-    // max-height: 100%;
-    height: 100%;
-    width: auto;
   }
 }
 
 //
 // BEGIN MODAL
 //
-
+.modal-bg {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  align-items: center;
+  visibility: hidden;
+  z-index: 3;
+}
 .modal-main {
-  padding-bottom: 3rem; // temp
+  position: relative;
+  padding-bottom: 10rem; // padding to move up the screen
+  display: block;
+  @include clearfix;
+  z-index: 1;
+  visibility: hidden;
+  // display: none;
+
+  @include MQ(M) {
+    padding-bottom: 0;
+  }
 
   .row {
     justify-content: center;
-    background-color: $color-2; // temp
+    // background-color: $color-2; // temp
 
     .modal-img {
       position: relative;
       padding: 0;
       margin: 0;
 
-      .container-img {
-        height: 450px; // temp
+      & .container-img {
+        height: 100%;
+
+        @include MQ(M) {
+          height: 300px;
+        }
+
+        & img {
+          display: none;
+        }
       }
 
       .modal-nav a {
@@ -197,157 +231,195 @@ Main components
 
     .modal-info {
       background-color: $color-4; // temp
-    }
-  }
-}
+      padding-left: 3rem;
+      // visibility: hidden;
+      // display: none;
 
-.cd-quick-view {
-  visibility: hidden;
-  position: relative;
-  display: block;
-  position: fixed;
-  max-width: 900px;
-
-  // temp settings
-  // width: 900px;
-  // height: 450px;
-  // top: 100px;
-  // left: 200px;
-
-  /* Force Hardware Acceleration in WebKit */
-  // @include transform(translateZ(0));
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: left, top, width, height;
-
-  @include clearfix;
-  z-index: 1;
-
-  &.is-visible {
-    /* class added when user clicks on .cd-trigger */
-    visibility: visible;
-  }
-
-  &.animate-width {
-    /* class added at the end of the first zoom-in animation */
-    background-color: $color-4;
-    box-shadow: 0 0 30px rgba(#000, 0.2);
-    // @include transition(box-shadow .3s);
-  }
-
-  & .cd-slider-wrapper {
-    position: relative;
-    float: left;
-    height: 450px;
-    width: 400px;
-    @include clearfix;
-    margin-right: 3rem;
-
-    & .cd-slider-img {
-      position: relative;
-      display: flex;
-      text-align: center;
-      align-items: center;
-
-      & img {
-        object-fit: cover;
-        max-width: 100%;
-        width: 100%;
-        height: auto;
-      }
-    }
-
-    & .cd-slider-navigation a {
-      position: absolute;
-      @include center(y); // mixins inside partials > _mixins.scss
-      z-index: 3;
-      padding: 15px;
-      color: rgba($color-4, 0.2);
-      @include transition(opacity 0.2s, background-color 0.2s);
-
-      &:hover {
-        color: $color-4;
-        background-color: rgba($color-3, 0.8);
+      & h2 {
+        padding-top: 3rem;
+        padding-bottom: 1rem;
       }
 
-      &:first-child {
-        left: 0;
+      & p {
+        padding-bottom: 3rem;
       }
-      &:last-child {
-        right: 0;
+
+      & .modal-action {
+        padding-bottom: 3rem;
       }
     }
   }
 
-  // Animation keyframes
-  @include keyframes(cd-slide-in) {
-    0% {
-      @include transform(translate3d(-40px, 0, 0));
-    }
-
-    100% {
-      @include transform(translate3d(0, 0, 0));
-    }
-  }
-}
-
-// Modal Text Content
-.cd-item-info {
-  position: absolute;
-  visibility: hidden;
-  opacity: 0;
-  padding: 3rem;
-  -webkit-transition: opacity 0.3s, visibility 0s;
-  -moz-transition: opacity 0.3s, visibility 0s;
-  transition: opacity 0.3s, visibility 0s;
-
-  p {
-    padding: 1rem;
-  }
-
-  // Animate on the way in
-  .add-content & {
-    /* class added at the end of the width animation, used to show the content */
-    position: relative;
-    visibility: visible;
-    opacity: 1;
-
-    h2 {
-      @include animation(cd-slide-in 0.3s);
-    }
-
-    p {
-      @include animation(cd-slide-in 0.4s);
-    }
-
-    .cd-item-action {
-      @include animation(cd-slide-in 0.5s);
-    }
-  }
-}
-
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  color: #000;
-  visibility: hidden;
-  @include transform(scale(0));
-  -webkit-transition: -webkit-transform 0.3s 0s, visibility 0s 0.3s;
-  -moz-transition: -moz-transform 0.3s 0s, visibility 0s 0.3s;
-  transition: transform 0.3s 0s, visibility 0s 0.3s;
-
-  // animate on appear
-  .add-content & {
-    visibility: visible;
-    @include transform(scale(1));
-    -webkit-transition: -webkit-transform 0.3s 0s, visibility 0s 0s;
-    -moz-transition: -moz-transform 0.3s 0s, visibility 0s 0s;
-    transition: transform 0.3s 0s, visibility 0s 0s;
-  }
-  &:hover {
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 115px;
     color: #000;
-    @include transform(scale(1.3));
+    padding: 10px;
+    z-index: 2;
+    // visibility: hidden;
+    // @include transform(scale(0));
+    -webkit-transition: -webkit-transform 0.3s 0s, visibility 0s 0.3s;
+    -moz-transition: -moz-transform 0.3s 0s, visibility 0s 0.3s;
+    transition: transform 0.3s 0s, visibility 0s 0.3s;
+
+    // animate on appear
+    // .add-content & {
+    //   visibility: visible;
+    //   @include transform(scale(1));
+    //   -webkit-transition: -webkit-transform 0.3s 0s, visibility 0s 0s;
+    //   -moz-transition: -moz-transform 0.3s 0s, visibility 0s 0s;
+    //   transition: transform 0.3s 0s, visibility 0s 0s;
+    // }
+
+    &:hover {
+      color: #000;
+      @include transform(scale(1.3));
+    }
+
+    @include MQ(L) {
+      right: 100px;
+    }
+    @include MQ(M) {
+      right: 15px;
+    }
+
+    & i {
+      z-index: 0;
+    }
   }
 }
+
+.is-visible {
+  visibility: visible;
+}
+//
+//
+//
+//
+
+// .cd-quick-view {
+//   visibility: hidden;
+//   position: relative;
+//   display: block;
+//   position: fixed;
+
+//   // temp settings
+//   // width: 900px;
+//   // height: 450px;
+//   // top: 100px;
+//   // left: 200px;
+
+//   /* Force Hardware Acceleration in WebKit */
+//   // @include transform(translateZ(0));
+//   -webkit-backface-visibility: hidden;
+//   backface-visibility: hidden;
+//   will-change: left, top, width, height;
+
+//   @include clearfix;
+//   z-index: 1;
+
+//   &.is-visible {
+//     /* class added when user clicks on .img-trigger */
+//     visibility: visible;
+//   }
+
+//   &.animate-width {
+//     /* class added at the end of the first zoom-in animation */
+//     background-color: $color-4;
+//     box-shadow: 0 0 30px rgba(#000, 0.2);
+//     // @include transition(box-shadow .3s);
+//   }
+
+//   & .cd-slider-wrapper {
+//     position: relative;
+//     float: left;
+//     height: 450px;
+//     width: 400px;
+//     @include clearfix;
+//     margin-right: 3rem;
+
+//     & .cd-slider-img {
+//       position: relative;
+//       display: flex;
+//       text-align: center;
+//       align-items: center;
+
+//       & img {
+//         object-fit: cover;
+//         max-width: 100%;
+//         width: 100%;
+//         height: auto;
+//       }
+//     }
+
+//     & .cd-slider-navigation a {
+//       position: absolute;
+//       @include center(y); // mixins inside partials > _mixins.scss
+//       z-index: 3;
+//       padding: 15px;
+//       color: rgba($color-4, 0.2);
+//       @include transition(opacity 0.2s, background-color 0.2s);
+
+//       &:hover {
+//         color: $color-4;
+//         background-color: rgba($color-3, 0.8);
+//       }
+
+//       &:first-child {
+//         left: 0;
+//       }
+//       &:last-child {
+//         right: 0;
+//       }
+//     }
+//   }
+
+//   // Animation keyframes
+//   @include keyframes(cd-slide-in) {
+//     0% {
+//       @include transform(translate3d(-40px, 0, 0));
+//     }
+
+//     100% {
+//       @include transform(translate3d(0, 0, 0));
+//     }
+//   }
+// }
+
+// // Modal Text Content
+// .img-item-info {
+//   position: absolute;
+//   visibility: hidden;
+//   opacity: 0;
+//   padding: 3rem;
+//   -webkit-transition: opacity 0.3s, visibility 0s;
+//   -moz-transition: opacity 0.3s, visibility 0s;
+//   transition: opacity 0.3s, visibility 0s;
+
+//   p {
+//     padding: 1rem;
+//   }
+
+//   // Animate on the way in
+//   .add-content & {
+//     /* class added at the end of the width animation, used to show the content */
+//     position: relative;
+//     visibility: visible;
+//     opacity: 1;
+
+//     h2 {
+//       @include animation(cd-slide-in 0.3s);
+//     }
+
+//     p {
+//       @include animation(cd-slide-in 0.4s);
+//     }
+
+//     .img-item-action {
+//       @include animation(cd-slide-in 0.5s);
+//     }
+//   }
+// }
+
 // END MODAL
