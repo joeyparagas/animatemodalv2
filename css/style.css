@@ -245,19 +245,22 @@ Main components
 
 .modal-main .row .modal-info {
   background-color: #ffffff;
-  padding-left: 3rem;
+  width: 0;
 }
 
 .modal-main .row .modal-info h2 {
   padding-top: 3rem;
   padding-bottom: 1rem;
+  padding-left: 3rem;
 }
 
 .modal-main .row .modal-info p {
+  padding-left: 3rem;
   padding-bottom: 3rem;
 }
 
 .modal-main .row .modal-info .modal-action {
+  padding-left: 3rem;
   padding-bottom: 3rem;
 }
 
@@ -267,7 +270,6 @@ Main components
   right: 115px;
   color: #000;
   padding: 10px;
-  z-index: 2;
   -webkit-transition: -webkit-transform 0.3s 0s, visibility 0s 0.3s;
   -webkit-transition: visibility 0s 0.3s, -webkit-transform 0.3s 0s;
   transition: visibility 0s 0.3s, -webkit-transform 0.3s 0s;
@@ -293,154 +295,29 @@ Main components
   }
 }
 
-.modal-main .close-btn i {
-  z-index: 0;
-}
-
 .is-visible {
   visibility: visible;
 }
 
-.cd-quick-view {
+.img-animate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #ffffff;
   visibility: hidden;
-  position: relative;
-  display: block;
-  position: fixed;
-  /* Force Hardware Acceleration in WebKit */
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: left, top, width, height;
+}
+
+.img-animate.is-visible {
+  visibility: visible;
   z-index: 1;
 }
 
-.cd-quick-view::after {
-  clear: both;
-  content: "";
-  display: table;
-}
-
-.cd-quick-view.is-visible {
-  /* class added when user clicks on .img-trigger */
-  visibility: visible;
-}
-
-.cd-quick-view.animate-width {
-  /* class added at the end of the first zoom-in animation */
-  background-color: #ffffff;
-  -webkit-box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-}
-
-.cd-quick-view .cd-slider-wrapper {
-  position: relative;
-  float: left;
-  height: 450px;
-  width: 400px;
-  margin-right: 3rem;
-}
-
-.cd-quick-view .cd-slider-wrapper::after {
-  clear: both;
-  content: "";
-  display: table;
-}
-
-.cd-quick-view .cd-slider-wrapper .cd-slider-img {
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  text-align: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.cd-quick-view .cd-slider-wrapper .cd-slider-img img {
-  -o-object-fit: cover;
-     object-fit: cover;
-  max-width: 100%;
-  width: 100%;
-  height: auto;
-}
-
-.cd-quick-view .cd-slider-wrapper .cd-slider-navigation a {
+.txt-animate {
   position: absolute;
-  top: 50%;
-  bottom: auto;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
-  z-index: 3;
-  padding: 15px;
-  color: rgba(255, 255, 255, 0.2);
-  -webkit-transition: opacity 0.2s, background-color 0.2s;
-  transition: opacity 0.2s, background-color 0.2s;
-}
-
-.cd-quick-view .cd-slider-wrapper .cd-slider-navigation a:hover {
-  color: #ffffff;
-  background-color: rgba(71, 55, 78, 0.8);
-}
-
-.cd-quick-view .cd-slider-wrapper .cd-slider-navigation a:first-child {
-  left: 0;
-}
-
-.cd-quick-view .cd-slider-wrapper .cd-slider-navigation a:last-child {
-  right: 0;
-}
-
-@-webkit-keyframes cd-slide-in {
-  0% {
-    -webkit-transform: translate3d(-40px, 0, 0);
-  }
-  100% {
-    -webkit-transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes cd-slide-in {
-  0% {
-    -webkit-transform: translate3d(-40px, 0, 0);
-    transform: translate3d(-40px, 0, 0);
-  }
-  100% {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.img-item-info {
-  position: absolute;
+  width: 0;
   visibility: hidden;
-  opacity: 0;
-  padding: 3rem;
-  -webkit-transition: opacity 0.3s, visibility 0s;
-  transition: opacity 0.3s, visibility 0s;
 }
 
-.img-item-info p {
-  padding: 1rem;
-}
-
-.add-content .img-item-info {
-  /* class added at the end of the width animation, used to show the content */
-  position: relative;
+.txt-animate.is-visible {
   visibility: visible;
-  opacity: 1;
-}
-
-.add-content .img-item-info h2 {
-  -webkit-animation: cd-slide-in 0.3s;
-  animation: cd-slide-in 0.3s;
-}
-
-.add-content .img-item-info p {
-  -webkit-animation: cd-slide-in 0.4s;
-  animation: cd-slide-in 0.4s;
-}
-
-.add-content .img-item-info .img-item-action {
-  -webkit-animation: cd-slide-in 0.5s;
-  animation: cd-slide-in 0.5s;
 }

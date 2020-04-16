@@ -25,11 +25,6 @@ a {
   text-decoration: none;
 }
 
-img {
-  // max-width: 100%;
-  // height: auto;
-}
-
 h1 {
   color: $color-4;
   @include font-size(30px);
@@ -231,20 +226,21 @@ Main components
 
     .modal-info {
       background-color: $color-4; // temp
-      padding-left: 3rem;
-      // visibility: hidden;
-      // display: none;
+      width: 0;
 
       & h2 {
         padding-top: 3rem;
         padding-bottom: 1rem;
+        padding-left: 3rem;
       }
 
       & p {
+        padding-left: 3rem;
         padding-bottom: 3rem;
       }
 
       & .modal-action {
+        padding-left: 3rem;
         padding-bottom: 3rem;
       }
     }
@@ -256,7 +252,6 @@ Main components
     right: 115px;
     color: #000;
     padding: 10px;
-    z-index: 2;
     // visibility: hidden;
     // @include transform(scale(0));
     -webkit-transition: -webkit-transform 0.3s 0s, visibility 0s 0.3s;
@@ -283,15 +278,35 @@ Main components
     @include MQ(M) {
       right: 15px;
     }
-
-    & i {
-      z-index: 0;
-    }
   }
 }
 
 .is-visible {
   visibility: visible;
+}
+
+.img-animate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #ffffff;
+  visibility: hidden;
+
+  &.is-visible {
+    visibility: visible;
+    z-index: 1;
+  }
+}
+
+.txt-animate {
+  position: absolute;
+  width: 0;
+  visibility: hidden;
+
+  &.is-visible {
+    visibility: visible;
+    // z-index: 0;
+  }
 }
 //
 //

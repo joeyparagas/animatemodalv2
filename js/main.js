@@ -11,7 +11,6 @@ jQuery(document).ready(function ($) {
     containerImage[i].style.backgroundSize = 'cover';
     containerImage[i].style.backgroundPosition = 'center';
     containerImage[i].style.backgroundSize = 'cover';
-    // containerImage[i].style.height = '255px';
   }
 
   // Click to Open Modal
@@ -20,38 +19,40 @@ jQuery(document).ready(function ($) {
       gridImgSrc = gridImg.attr('src'),
       gridTitle = $(this).parent('.img-item').find('h2').text(),
       gridTxt = $(this).parent('.img-item').find('p').text(),
-      windowW = $(window).width(),
-      modalImgW = 0;
+      windowW = $(window).width();
+    // modalImgW = 0;
 
     // Find Modal Image width using Bootstrap measurements
-    if (windowW >= 1200) {
-      modalImgW = 380;
-    } else if (windowW >= 992) {
-      modalImgW = 320;
-    } else if (windowW >= 768) {
-      modalImgW = 380;
-    } else if (windowW >= 576) {
-      modalImgW = 380;
-    } else {
-      modalImgW = 380;
-    }
-
-
+    // if (windowW >= 1200) {
+    //   modalImgW = 380;
+    // } else if (windowW >= 992) {
+    //   modalImgW = 320;
+    // } else if (windowW >= 768) {
+    //   modalImgW = 380;
+    // } else if (windowW >= 576) {
+    //   modalImgW = 380;
+    // } else {
+    //   modalImgW = 380;
+    // }
 
     // Insert Modal Img and Data
     updateModal(gridImgSrc, gridTitle, gridTxt);
-    let modalHW = updateModal(gridImgSrc, gridTitle, gridTxt);
-    // Open Modal
-    animateModal(gridImg, modalImgW, modalHW[1], 'open');
+    // updateModal returns array [modalHeight, modalWidth, modalTop, modalLeft, modalImgW]
+    let modalStats = updateModal(gridImgSrc, gridTitle, gridTxt);
 
+    // Open Modal
+    animateModal(gridImg, gridImgSrc, modalStats, 'open');
   })
 
-  // Click Close (X) button or on modal-bg class 
+  // Click on background to close modal
   $('body').on('click', function (event) {
-    console.log(event.target);
-    if ($(event.target).is('.close-btn') || $(event.target).is('.modal-bg') || $(event.target).is('.modal-main')) {
+    if ($(event.target).is('.modal-bg') || $(event.target).is('.modal-main') || $(event.target).is('.modal-main .row')) {
       closeAnimate()
     }
+  });
+  // Click Close (X) button to close modal
+  $('.close-btn').on('click', function () {
+    closeAnimate()
   });
 
   // Click on navigation arrow in Modal
@@ -68,26 +69,34 @@ jQuery(document).ready(function ($) {
   });
 
   // Measurements to grab to animate modal
-  function animateModal(img, modalImgW, modalW, animationType) {
+  function animateModal(img, imgSrc, modalStats, animationType) {
+    // Image Measurements
     let imgItem = img.parents('.img-item'),
+      // imgSrc = imgItem.children('.container-img').children('img').attr('src'),
       imgDiv = img.parent(),
-      topImg = imgDiv.offset().top - $(window).scrollTop(),
+      topImg = imgDiv.offset().top,
       leftImg = imgDiv.offset().left,
       widthImg = imgDiv.width(),
       heightImg = imgDiv.height(),
+      // Window Measurements
       winWidth = $(window).width(),
-      winHeight = $(window).height(),
-      modalImgLeft = (winWidth - modalImgW) / 2,
-      modalImgH = modalImgW * heightImg / widthImg,
-      modalTop = (winHeight - modalImgH) / 2;
+      winHeight = $(window).height();
 
-    console.log(topImg);
-    console.log(leftImg);
-    // console.log('\nmodal img H: ', modalImgH);
-    // console.log('modal top ', modalTop);
+    // create new div for animation
+    $('main').append('<div class="img-animate"></div>');
+    $('.img-animate').css({
+      "top": topImg + 'px',
+      "left": leftImg + 'px',
+      "width": widthImg + 'px',
+      "height": heightImg + 'px',
+      "backgroundImage": "url(./" + imgSrc + ")",
+      "backgroundSize": 'cover',
+      "backgroundPosition": 'center',
+      "backgroundSize": 'cover'
+    })
 
     if (animationType == 'open') {
-      openAnimate(imgItem);
+      openAnimate(imgItem, modalStats);
     } else {
       closeAnimate()
     }
@@ -95,13 +104,16 @@ jQuery(document).ready(function ($) {
 
   // Updates modal with img source, h2 title and summary text
   function updateModal(imgSrc, modalTitle, modalTxt) {
-    $('.modal-img .container-img').css("background-image", "url(../" + imgSrc + ")");
+    $('.modal-img .container-img').css("background-image", "url(./" + imgSrc + ")");
     $('.modal-info h2').text(modalTitle);
     $('.modal-info p').text(modalTxt);
     let modalHeight = $('.modal-main').height(),
-      modalWidth = $('.modal-main').width(),
-      modalSize = [modalHeight, modalWidth];
-    return modalSize
+      modalWidth = $('.modal-img').width() + $('.modal-info').width(),
+      modalTop = $('.modal-main').offset().top,
+      modalLeft = $('.modal-img').offset().left,
+      modalImgW = $('.modal-img .container-img').width(),
+      modalStats = [modalHeight, modalWidth, modalTop, modalLeft, modalImgW];
+    return modalStats
   }
 
   // Updates modal when clicked next/prev in modal
@@ -147,19 +159,69 @@ jQuery(document).ready(function ($) {
 
   }
 
-  function openAnimate(parentDiv) {
-    parentDiv.addClass('empty-box');
-    $('.modal-main').addClass('is-visible')
-    $('.modal-bg').addClass('is-visible')
-    console.log('open');
+  function openAnimate(imgItem, modalStats) {
+    // modalStats [modalHeight, modalWidth, modalTop, modalLeft, modalImgW]
+    let modalH = modalStats[0],
+      modalW = modalStats[1],
+      modalTop = modalStats[2],
+      modalLeft = modalStats[3],
+      modalImgW = modalStats[4],
+      modalTxtW = $('.modal-info').width() + 30,  // for padding
+      imgCenter = ($(window).width() - modalImgW) / 2;
+
+    // Create Div to animate
+    $('main').append('<div class="txt-animate is-visible"></div>');
+    $('.txt-animate').css({
+      "top": modalTop + 'px',
+      "left": (modalLeft + modalImgW) + 'px',
+      "height": modalH + 'px',
+      "backgroundColor": '#ffffff'
+    })
+
+    // Add shadow box over grid img
+    imgItem.addClass('empty-box');
+
+    // Show overlay img and animate bounce in
+    $('.img-animate').addClass('is-visible')
+      .velocity({
+        top: modalTop,
+        left: imgCenter,
+        width: modalImgW,
+        height: modalH
+      }, 1000, [400, 20], function () {
+
+        // Animate text bg
+        $('.txt-animate').velocity({ width: modalTxtW }, 300, 'ease')
+
+        // Animate img move left
+        $('.img-animate')
+          .velocity({
+            left: modalLeft
+          }, 300, 'ease', function () {
+            $('.img-animate').removeClass('is-visible');
+            $('.txt-animate').removeClass('is-visible');
+            $('.modal-main').addClass('is-visible');
+            // animate text
+          });
+      })
+
+    // Temporarily disabled to intentionally hide modal
+    // $('.modal-main').addClass('is-visible')
+    // $('.modal-bg').addClass('is-visible')
+    // $('.img-animate').css({
+    //   "backgroundImage": "url(./" + imgSrc + ")",
+    //   "backgroundSize": 'cover',
+    //   "backgroundPosition": 'center',
+    //   "backgroundSize": 'cover'
+    // })
   }
 
   function closeAnimate(parentDiv) {
+    $('.img-animate').remove();
+    $('.txt-animate').remove();
     $('.empty-box').removeClass('empty-box');
     $('.modal-main').removeClass('is-visible')
     $('.modal-bg').removeClass('is-visible')
   }
-
-
 
 }); // End jQuery
